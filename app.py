@@ -129,7 +129,8 @@ def signup():
         # Hash & create user (unverified initially)
         hashed_pw = hash_password(password)
         otp = generate_otp()
-        expiry_time = datetime.utcnow() + timedelta(minutes=5)
+        expiry_time = datetime.now(IST) + timedelta(minutes=5)
+
 
         users_collection.insert_one({
             'regn_no': regn_no,
@@ -168,7 +169,7 @@ def resend_otp(email):
         return redirect(url_for('login'))
 
     new_otp = generate_otp()
-    new_expiry = datetime.utcnow() + timedelta(minutes=5)
+    new_expiry = datetime.now(IST) + timedelta(minutes=5)
     users_collection.update_one({'_id': user['_id']}, {'$set': {'otp': new_otp, 'otp_expiry': new_expiry}})
 
     send_email(
@@ -196,7 +197,7 @@ def verify_email(email):
             return redirect(url_for('login'))
         elif not user.get('otp') or not user.get('otp_expiry'):
             message = "No active OTP. Please resend a code."
-        elif datetime.utcnow() > user['otp_expiry']:
+        elif datetime.now(IST) > user['otp_expiry']:
             message = "OTP expired. Please request a new one."
         elif entered_otp == user['otp']:
             users_collection.update_one(
@@ -285,7 +286,8 @@ def create_team():
 
         # Generate guaranteed unique 6-char code
         code = generate_unique_code()
-
+        
+        now_ist = datetime.now(IST)
         team_doc = {
             "team_name": team_name,
             "description": description,
