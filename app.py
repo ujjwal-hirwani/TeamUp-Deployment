@@ -4,7 +4,7 @@ from flask_login import LoginManager, UserMixin, login_user, logout_user, login_
 from flask_pymongo import PyMongo
 from bson.objectid import ObjectId
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import pytz
 import gridfs
 from io import BytesIO
@@ -129,8 +129,7 @@ def signup():
         # Hash & create user (unverified initially)
         hashed_pw = hash_password(password)
         otp = generate_otp()
-        expiry_time = datetime.now(IST) + timedelta(minutes=5)
-
+        expiry_time = datetime.utcnow() + timedelta(minutes=5)
 
         users_collection.insert_one({
             'regn_no': regn_no,
@@ -169,7 +168,7 @@ def resend_otp(email):
         return redirect(url_for('login'))
 
     new_otp = generate_otp()
-    new_expiry = datetime.now(IST) + timedelta(minutes=5)
+    new_expiry = datetime.utcnow() + timedelta(minutes=5)
     users_collection.update_one({'_id': user['_id']}, {'$set': {'otp': new_otp, 'otp_expiry': new_expiry}})
 
     send_email(
@@ -197,7 +196,7 @@ def verify_email(email):
             return redirect(url_for('login'))
         elif not user.get('otp') or not user.get('otp_expiry'):
             message = "No active OTP. Please resend a code."
-        elif datetime.now(IST) > user['otp_expiry']:
+        elif datetime.utcnow() > user['otp_expiry']:
             message = "OTP expired. Please request a new one."
         elif entered_otp == user['otp']:
             users_collection.update_one(
@@ -612,4 +611,4 @@ def admin_logout():
 # -----------------------------
 if __name__ == "__main__":
     # Avoid reloader sending duplicate emails; use debug=True during dev if you want
-    app.run(debug=False)
+    app.run(debug=True)
