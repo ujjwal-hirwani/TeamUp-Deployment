@@ -1013,7 +1013,8 @@
             {% else %}
             <div class="members-grid">
                 {% for member in members %}
-                <div class="member-card">
+                    {% if member %}
+                        <div class="member-card">
                     <div class="member-avatar">
                         {{ member[0]|upper }}
                     </div>
@@ -1022,14 +1023,8 @@
                         <p>Team Member</p>
                     </div>
                     {% set member_regn = team.users[loop.index0] %}
-                    {% if current_user.regn_no == team.created_by and member_regn != current_user.regn_no %}
-                    <form method="POST" action="{{ url_for('remove_member', team_id=team._id, regn_no=member_regn) }}">
-                        <button type="submit" class="remove-btn">
-                            <i class="fas fa-user-times"></i>
-                        </button>
-                    </form>
-                    {% endif %}
                 </div>
+                    {% endif %}
                 {% endfor %}
             </div>
             {% endif %}

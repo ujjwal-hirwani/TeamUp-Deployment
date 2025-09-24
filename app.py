@@ -277,7 +277,15 @@ def create_team():
         team_name = request.form['team_name'].strip()
         description = request.form['description'].strip()
         github_repo = request.form['github_repo'].strip()
-
+        reg_no_1 = request.form['reg_no_1'].strip()
+        reg_no_2 = request.form['reg_no_2'].strip()
+        reg_no_3 = request.form['reg_no_3'].strip()
+        reg_no_4 = request.form['reg_no_4'].strip()
+        name_1 = request.form['name_1'].strip()
+        name_2 = request.form['name_2'].strip()
+        name_3 = request.form['name_3'].strip()
+        name_4 = request.form['name_4'].strip()
+        
         # Ensure unique team name
         if teams_collection.find_one({"team_name": team_name}):
             message = "Team name already exists. Choose a different one."
@@ -285,7 +293,7 @@ def create_team():
 
         # Generate guaranteed unique 6-char code
         code = generate_unique_code()
-        
+        creator_name = current_user.first_name + " " + current_user.last_name
         now_ist = datetime.now(IST)
         team_doc = {
             "team_name": team_name,
@@ -294,7 +302,8 @@ def create_team():
             "created_by": current_user.regn_no,
             "date": now_ist.date().isoformat(),
             "time": now_ist.time().isoformat(timespec="seconds"),
-            "users": [current_user.regn_no],
+            "users": [current_user.regn_no, reg_no_1, reg_no_2, reg_no_3, reg_no_4],
+            "team_members": [creator_name, name_1, name_2, name_3, name_4],
             "github_repo": github_repo,
             "points": 0   # ✅ Initialize with 0 points
         }
@@ -384,13 +393,7 @@ def team(team_id):
     creator = users_collection.find_one({"regn_no": team['created_by']})
     created_by_name = f"{creator.get('first_name', '')} {creator.get('last_name', '')}" if creator else team['created_by']
 
-    members = []
-    for regn_no in team.get('users', []):
-        user = users_collection.find_one({"regn_no": regn_no})
-        if user:
-            members.append(f"{user.get('first_name','')} {user.get('last_name','')}")
-        else:
-            members.append(regn_no)
+    members = team.get('team_members', [])
 
     return render_template(
         'team.html',

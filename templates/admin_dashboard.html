@@ -506,6 +506,7 @@
             <th>Team Name</th>
             <th>Code</th>
             <th>Points</th>
+            <th>Description</th>
             <th>Actions</th>
           </tr>
         </thead>
@@ -515,6 +516,9 @@
             <td>{{ team.team_name }}</td>
             <td>{{ team.code }}</td>
             <td>{{ team.points }}</td>
+            {% if team.description %}
+              <td>{{ team.description }}</td>
+            {% endif %}
             <td>
               <div class="team-actions">
                 <!-- Update Points -->
