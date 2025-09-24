@@ -145,8 +145,8 @@ def signup():
         # Send OTP
         send_email(
             recipient_email=email,
-            subject="Verify your account",
-            body=f"Hi {first_name},\n\nYour verification code is: {otp}\nIt will expire in 5 minutes.\n\n— Hackathon Website"
+            subject="TeamUp - Verify your account",
+            body=f"Hi {first_name},\n\nYour verification code is: {otp}\nIt will expire in 5 minutes.\n\n— TeamUp."
         )
 
         message = "Signup successful! Check your email for the verification code."
@@ -174,7 +174,7 @@ def resend_otp(email):
     send_email(
         recipient_email=email,
         subject="Your new verification code",
-        body=f"Hi {user.get('first_name', '')},\n\nYour new verification code is: {new_otp}\nIt will expire in 5 minutes.\n\n— Hackathon Website"
+        body=f"Hi {user.get('first_name', '')},\n\nYour new verification code is: {new_otp}\nIt will expire in 5 minutes.\n\n— TeamUp"
     )
 
     message = "A new verification code has been sent to your email."
