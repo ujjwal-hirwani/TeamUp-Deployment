@@ -137,20 +137,21 @@ def signup():
             'first_name': first_name,
             'last_name': last_name,
             'email': email,
-            'verified': False,
+            'verified': True,
             'otp': otp,
             'otp_expiry': expiry_time
         })
 
+        return redirect(url_for('login'))
         # Send OTP
-        send_email(
-            recipient_email=email,
-            subject="TeamUp - Verify your account",
-            body=f"Hi {first_name},\n\nYour verification code is: {otp}\nIt will expire in 5 minutes.\n\n— TeamUp."
-        )
+        # send_email(
+        #     recipient_email=email,
+        #     subject="TeamUp - Verify your account",
+        #     body=f"Hi {first_name},\n\nYour verification code is: {otp}\nIt will expire in 5 minutes.\n\n— TeamUp."
+        # )
 
-        message = "Signup successful! Check your email for the verification code."
-        return redirect(url_for('verify_email', email=email))
+        # message = "Signup successful! Check your email for the verification code."
+        # return redirect(url_for('verify_email', email=email))
 
     return render_template('signup.html', message=message)
 
